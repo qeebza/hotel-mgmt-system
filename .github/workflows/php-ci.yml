@@ -1,0 +1,33 @@
+name: PHP CI
+
+on:
+  push:
+    branches: [ master, develop, "fix/**" ]
+  pull_request:
+    branches: [ master, develop ]
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup PHP 7.4
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '7.4'
+          extensions: mbstring, mysqli, pdo_mysql
+          tools: composer
+
+      - name: Check PHP syntax errors
+        run: find . -name "*.php" -not -path "./vendor/*" -print0 | xargs -0 -n1 php -l
+
+      - name: Validate composer.json
+        run: composer validate --no-check-publish
+        continue-on-error: true
+
+      - name: Install Composer dependencies
+        run: composer install --no-interaction --prefer-dist
+        continue-on-error: true
