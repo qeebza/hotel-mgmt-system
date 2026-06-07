@@ -19,7 +19,7 @@ Thank you for understanding!
 5. Run the app.
 
 ## Create an account
-1. Go to the registration page (register.php) i.e. http://hotel.local/register.php
+1. Go to the registration page (register.php) i.e. http://hotel.local/register.php | http://localhost/hotel-mgmt-system/
 2. Enter your info.
 3. To make an admin account
    - 3.1 go to your hotel database
