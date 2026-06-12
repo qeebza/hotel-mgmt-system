@@ -1,9 +1,9 @@
 <?php
-require './vendor/autoload.php';
-require './app/models/RequirementEnum.php';
-require './app/models/StatusEnum.php';
+require_once __DIR__ . '/../vendor/autoload.php';
 
-class BookingDetailHandlerTest extends PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class BookingDetailHandlerTest extends TestCase
 {
     public function testGetAllBookings()
     {

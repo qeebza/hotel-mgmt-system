@@ -1,8 +1,9 @@
 <?php
-require './vendor/autoload.php';
+require_once __DIR__ . '/../vendor/autoload.php';
 
+use PHPUnit\Framework\TestCase;
 
-class CustomerHandlerTest extends PHPUnit_Framework_TestCase
+class CustomerHandlerTest extends TestCase
 {
     public function testGetAllCustomer()
     {

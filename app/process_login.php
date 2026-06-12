@@ -7,6 +7,13 @@
 // other process scripts follow the same cycle
 
 ob_start();
+
+ini_set('session.use_strict_mode', '1');
+session_set_cookie_params([
+    'httponly' => true,
+    'secure' => !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off',
+    'samesite' => 'Lax'
+]);
 session_start();
 
 // include this for every Customer model existence
@@ -44,6 +51,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["submitBtn"])) {
         if (!$handler->isPasswordMatchWithEmail($_POST['password'], $customer)) {
             echo Util::displayAlertV1("Incorrect password.", "warning");
         } else {
+            session_regenerate_id(true);
+
             if ($isAdmin) { 
                 $_SESSION["username"] = $_POST["email"];
                 $_SESSION["accountEmail"] = $_POST["email"];
@@ -53,7 +62,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["submitBtn"])) {
                 $_SESSION["username"] = $handler->getUsername($_POST["email"]);
                 $_SESSION["accountEmail"] = $customer->getEmail();
                 $_SESSION["authenticated"] = [1, "false"];
-                $_SESSION["password"] = $_POST["password"];
 
                 // set the session phone number too
                 if ($handler->getCustomerObj($_POST["email"])->getPhone()) {
