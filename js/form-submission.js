@@ -76,17 +76,27 @@ const loginSubmit = function () {
     type: 'post',
     data: loginData
   }).done(function (response) {
-    let resp = JSON.parse(response);
-    if (resp[0] === 1) {
-      new UtilityFunctions().setCookie('is_admin', resp[1]);
-      let locHref = location.href;
-      let homePageLink = locHref.substring(0, locHref.lastIndexOf('/')) + '/index.php';
-      window.location.replace(homePageLink);
-    } else {
-      $(formIds.login).find('.alert').remove();
-      $(formIds.login).prepend(response);
+
+    $(formIds.login).find('.alert').remove();
+
+    try {
+        let resp = JSON.parse(response);
+
+        if (resp[0] === 1) {
+            new UtilityFunctions().setCookie('is_admin', resp[1]);
+
+            let locHref = location.href;
+            let homePageLink =
+                locHref.substring(0, locHref.lastIndexOf('/')) + '/index.php';
+
+            window.location.replace(homePageLink);
+        }
+    } catch (e) {
+        // Response is HTML alert message
+        $(formIds.login).prepend(response);
     }
-  });
+
+});
 };
 
 const clickSignOut = function () {

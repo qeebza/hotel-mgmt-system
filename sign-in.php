@@ -38,7 +38,7 @@ if (isset($_SESSION["authenticated"]))
                                 <div class="form-group">
                                     <label for="loginEmail">Email</label>
                                     <span class="red-asterisk"> *</span>
-                                    <input type="text" class="form-control"
+                                    <input type="email" class="form-control"
                                            id="loginEmail"
                                            name="loginEmail"
                                            placeholder="email address"
