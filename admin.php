@@ -1,6 +1,18 @@
 <?php
 ob_start();
 session_start();
+
+// Authentication check
+if (!isset($_SESSION["isAdmin"])) {
+    header("Location: sign-in.php");
+    exit();
+}
+
+// Verify admin role
+if ($_SESSION["isAdmin"][0] != 1) {
+    header("Location: index.php");
+    exit();
+}
 ?>
 <!doctype html>
 <html lang="en">
