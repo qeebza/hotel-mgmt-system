@@ -466,10 +466,24 @@ session_start();
                                            name="updateEmail" value="<?php echo $cHandler->getEmail(); ?>" readonly>
                                 </div>
                                 <div class="form-group">
+                                    <label for="updateCurrentPassword">Current Password</label>
+                                    <span class="red-asterisk"> *</span>
+                                    <input type="password" class="form-control" id="updateCurrentPassword"
+                                           name="updateCurrentPassword"
+                                           placeholder="Enter current password to confirm changes"
+                                           required>
+                                </div>
+                                <div class="form-group">
                                     <label for="updatePassword">New Password</label>
                                     <input type="password" class="form-control" id="updatePassword"
                                            name="updatePassword"
-                                           title="At least 4 characters with letters and numbers">
+                                           title="At least 8 characters including uppercase, lowercase, number, and special character">
+                                </div>
+                                <div class="form-group">
+                                    <label for="updatePassword2">Confirm New Password</label>
+                                    <input type="password" class="form-control" id="updatePassword2"
+                                           name="updatePassword2"
+                                           title="Retype the new password">
                                 </div>
                                 <div class="form-group">
                                     <input type="submit" class="btn btn-primary btn-md float-right"

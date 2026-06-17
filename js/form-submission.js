@@ -43,7 +43,9 @@ const formData = {
       fullName: $('input[name="updateFullName"]').val(),
       phone: $("input[name='updatePhoneNumber']").val(),
       email: $("input[name='updateEmail']").val(),
+      currentPassword: $("input[name='updateCurrentPassword']").val(),
       newPassword: $("input[name='updatePassword']").val(),
+      confirmPassword: $("input[name='updatePassword2']").val(),
       submitBtn: $('input[name="updateProfileSubmitBtn"]').val()
     };
   }

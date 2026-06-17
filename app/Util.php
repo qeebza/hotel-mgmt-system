@@ -48,6 +48,15 @@ class Util
       preg_match_all($re, $str, $matches, PREG_SET_ORDER, 0);
       return count($matches) > 0;
     }
+
+    public static function isStrongPassword($password)
+    {
+      return strlen($password) >= 8
+        && preg_match('/[A-Z]/', $password)
+        && preg_match('/[a-z]/', $password)
+        && preg_match('/[0-9]/', $password)
+        && preg_match('/[^A-Za-z0-9]/', $password);
+    }
       
   
 }
