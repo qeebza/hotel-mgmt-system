@@ -59,6 +59,19 @@ class CustomerDAO
         return $exec;    
     }
 
+    protected function updateProfile(Customer $customer)
+    {
+        $query = "UPDATE customer SET fullname = :fullname, phone = :phone WHERE cid = :cid AND email = :email;";
+        $stmt = DB::getInstance()->prepare($query);
+        $exec = $stmt->execute([
+            'fullname'  => $customer->getFullName(),
+            'phone'     => $customer->getPhone(),
+            'cid'       => $customer->getId(),
+            'email'     => $customer->getEmail()
+        ]);
+        return $exec;    
+    }
+
     protected function delete(Customer $customer)
     {
         $sql = 'DELETE FROM `customer` WHERE `customer`.`cid` = ?';
