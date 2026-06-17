@@ -44,16 +44,40 @@ Thank you for understanding!
 ![manage_booking](https://user-images.githubusercontent.com/5623994/51089150-6d3e8f00-1736-11e9-9af0-601ef58847b4.PNG)
 
 ## For developer
+**Install PHP dependencies**
+```
+$ composer install
+```
+
+This project uses PHPUnit 9.6, which is compatible with PHP 7.4.
+
 **Run PHP unit tests**
+
+Run all tests:
 ```
 $ ./vendor/bin/phpunit tests
 ```
+
+Run the customer handler tests:
 ```
 $ ./vendor/bin/phpunit tests/CustomerHandlerTest.php
 ```
+
+Run the session and error management tests:
+```
+$ ./vendor/bin/phpunit tests/SessionErrorManagementTest.php
+```
+
+Run one specific test:
 ```
 $ ./vendor/bin/phpunit --filter testUpdateCustomer tests
 ```
+
+Example for session management:
+```
+$ ./vendor/bin/phpunit --filter testLogoutUsesPostRequest tests/SessionErrorManagementTest.php
+```
+
 **Run PHP code beautifier and fixer**
 ```
 $ ./vendor/bin/phpcbf app/process_login.php --standard=ruleset.xml

@@ -7,6 +7,13 @@
 // other process scripts follow the same cycle
 
 ob_start();
+
+ini_set('session.use_strict_mode', '1');
+session_set_cookie_params([
+    'httponly' => true,
+    'secure' => !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off',
+    'samesite' => 'Lax'
+]);
 session_start();
 
 // include this for every Customer model existence
@@ -76,46 +83,39 @@ $email = trim($_POST["email"]);
         $isAdmin = $handler->handleIsAdmin($_POST["email"]);
 
         if (!$handler->isPasswordMatchWithEmail($_POST['password'], $customer)) {
-
             $_SESSION["login_attempts"]++;
 
-        if ($_SESSION["login_attempts"] >= 5) {
-            $_SESSION["lock_time"] = time();
-        }
+            if ($_SESSION["login_attempts"] >= 5) {
+                $_SESSION["lock_time"] = time();
+            }
 
-        echo Util::displayAlertV1(
-            "Invalid email or password.",
-             "warning"
-       );
+            echo Util::displayAlertV1(
+                "Invalid email or password.",
+                "warning"
+            );
         } else {
-if ($isAdmin) {
+            session_regenerate_id(true);
+            $_SESSION["login_attempts"] = 0;
 
-    session_regenerate_id(true); // Enhancement 4
-    $_SESSION["login_attempts"] = 0;
+            if ($isAdmin) {
+                $_SESSION["username"] = $_POST["email"];
+                $_SESSION["accountEmail"] = $_POST["email"];
+                $_SESSION["isAdmin"] = [1, "true"];
 
-    $_SESSION["username"] = $_POST["email"];
-    $_SESSION["accountEmail"] = $_POST["email"];
-    $_SESSION["isAdmin"] = [1, "true"];
+                echo json_encode($_SESSION["isAdmin"]);
+            } else {
+                $_SESSION["username"] = $handler->getUsername($_POST["email"]);
+                $_SESSION["accountEmail"] = $customer->getEmail();
+                $_SESSION["authenticated"] = [1, "false"];
 
-    echo json_encode($_SESSION["isAdmin"]);
+                // set the session phone number too
+                if ($handler->getCustomerObj($_POST["email"])->getPhone()) {
+                    $_SESSION["phoneNumber"] =
+                        $handler->getCustomerObj($_POST["email"])->getPhone();
+                }
 
-} else {
-
-    session_regenerate_id(true); // Enhancement 4
-    $_SESSION["login_attempts"] = 0;
-
-    $_SESSION["username"] = $handler->getUsername($_POST["email"]);
-    $_SESSION["accountEmail"] = $customer->getEmail();
-    $_SESSION["authenticated"] = [1, "false"];
-
-    // set the session phone number too
-    if ($handler->getCustomerObj($_POST["email"])->getPhone()) {
-        $_SESSION["phoneNumber"] =
-            $handler->getCustomerObj($_POST["email"])->getPhone();
-    }
-
-    echo json_encode($_SESSION["authenticated"]);
-}
+                echo json_encode($_SESSION["authenticated"]);
+            }
         }
     }
 }
