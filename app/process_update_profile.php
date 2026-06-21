@@ -3,7 +3,6 @@
 ob_start();
 session_start();
 
-
 require '../lib/phpPasswordHashing/passwordLib.php';
 require 'DB.php';
 require 'Util.php';
@@ -32,25 +31,31 @@ if (isset($_SESSION["authenticated"]) && $_SESSION["authenticated"][1] == "false
         if (!empty($errors_)) {
             echo $errors_;
         } else {
-            $c = new Customer();
-            $c->setId(Util::sanitize_xss($_POST["cid"]));
-            $c->setFullName(Util::sanitize_xss($_POST["fullName"]));
-            $c->setPhone(Util::sanitize_xss($_POST["phone"]));
-            $c->setEmail(Util::sanitize_xss($_POST["email"]));
-            $c->setPassword(Util::sanitize_xss($pwd));
-    
-            if (isset($_SESSION["authenticated"]) && $_SESSION["authenticated"][1] == "false" &&
-                isset($_COOKIE['is_admin']) && $_COOKIE['is_admin'] == "false") {
-                $cHandler = new CustomerHandler();
-                $cHandler->updateCustomer($c);
-                echo Util::displayAlertV1($cHandler->getExecutionFeedback(), "success");    
-            }
-            
-            if (isset($_SESSION["username"])) {
-                $_SESSION["username"] = $cHandler->getUsername($_POST["email"]);
-            }
-            if (isset($_SESSION["phoneNumber"])) {
-                $_SESSION["phoneNumber"] = $_POST["phone"];
+            // Software Quality Improvement: Try-Catch block to handle validation rejections
+            try {
+                $c = new Customer();
+                $c->setId(Util::sanitize_xss($_POST["cid"]));
+                $c->setFullName(Util::sanitize_xss($_POST["fullName"]));
+                $c->setPhone(Util::sanitize_xss($_POST["phone"]));
+                $c->setEmail(Util::sanitize_xss($_POST["email"]));
+                $c->setPassword(Util::sanitize_xss($pwd));
+        
+                if (isset($_SESSION["authenticated"]) && $_SESSION["authenticated"][1] == "false" &&
+                    isset($_COOKIE['is_admin']) && $_COOKIE['is_admin'] == "false") {
+                    $cHandler = new CustomerHandler();
+                    $cHandler->updateCustomer($c);
+                    echo Util::displayAlertV1($cHandler->getExecutionFeedback(), "success");    
+                }
+                
+                if (isset($_SESSION["username"]) && isset($cHandler)) {
+                    $_SESSION["username"] = $cHandler->getUsername($_POST["email"]);
+                }
+                if (isset($_SESSION["phoneNumber"])) {
+                    $_SESSION["phoneNumber"] = $_POST["phone"];
+                }
+            } catch (InvalidArgumentException $e) {
+                // Catches the exceptions thrown by the Defensive Programming in Customer.php
+                echo Util::displayAlertV1($e->getMessage(), "warning");
             }
         }
     }

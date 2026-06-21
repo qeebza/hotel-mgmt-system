@@ -12,7 +12,7 @@ class DB
     {
         if (empty(self::$instance)) {
             $db_info = array(
-                "host" => "127.0.0.1",
+                "host" => "localhost",
                 "port" => "3307",
                 "user" => "root",
                 "pass" => "",
