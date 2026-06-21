@@ -27,14 +27,16 @@ class CustomerHandler extends CustomerDAO
         }
     }
 
-    public function getSingleRow($email)
-    {
-        if ($this->getByEmail($email)) {
-            return $this->getByEmail($email);
-        } else {
-            return Util::DB_SERVER_ERROR;
-        }
+public function getSingleRow($email)
+{
+    $result = $this->getByEmail($email);
+
+    if (!empty($result)) {
+        return $result;
     }
+
+    return [];
+}
 
     public function getCustomerObj($email)
     {
@@ -124,15 +126,18 @@ class CustomerHandler extends CustomerDAO
         }
     }
 
-    public function isPasswordMatchWithEmail($password, Customer $customer)
-    {
-        $cust = $this->getSingleRow($customer->getEmail())[0];
-        if (password_verify($password, $cust->getPassword())) {
-            return 'Password is valid!';
-        } else {
-            return 'Invalid password.';
-        }
+public function isPasswordMatchWithEmail($password, Customer $customer)
+{
+    $result = $this->getSingleRow($customer->getEmail());
+
+    if (empty($result) || !is_object($result[0])) {
+        return false;
     }
+
+    $cust = $result[0];
+
+    return password_verify($password, $cust->getPassword());
+}
 
     public function totalCustomersCount()
     {
