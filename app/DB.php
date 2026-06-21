@@ -12,8 +12,8 @@ class DB
     {
         if (empty(self::$instance)) {
             $db_info = array(
-                "host" => "localhost",
-                "port" => "3306",
+                "host" => "127.0.0.1",
+                "port" => "3307",
                 "user" => "root",
                 "pass" => "",
                 "name" => "hotel",
@@ -30,7 +30,10 @@ class DB
                 self::$instance->query('SET NAMES utf8');
                 self::$instance->query('SET CHARACTER SET utf8');
             } catch (PDOException $error) {
-                echo $error->getMessage();
+                error_log("Database connection failed: " . $error->getMessage());
+                http_response_code(500);
+                echo "Server error occurred. Please try again later.";
+                exit;
             }
         }
 

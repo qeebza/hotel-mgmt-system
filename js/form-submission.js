@@ -92,7 +92,7 @@ const loginSubmit = function () {
 const clickSignOut = function () {
   $.ajax({
     url: 'app/process_logout.php',
-    type: 'get'
+    type: 'post'
   }).done(function (response) {
     if (response === '1') {
       new UtilityFunctions().eraseCookie('is_admin');
