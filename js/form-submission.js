@@ -156,7 +156,7 @@ const updateProfileSubmit = function () {
       // SOFTWARE QUALITY FIX: Only disable the form if the update was actually successful
       if (response.includes("success")) {
           $(formIds.updateProfile).find('input').prop('disabled', true);
-      }S
+      }
     });
   } else {
     console.error('found reserved words');
