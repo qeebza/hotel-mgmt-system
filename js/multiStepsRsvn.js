@@ -191,3 +191,42 @@ class ReservationCost {
     this.displayTotalCost();
   }
 }
+
+// ==========================================
+// FRONTEND UX FIX: Dynamic Date Constraints
+// ==========================================
+$(document).ready(function() {
+  const $startDate = $('input[name="startDate"]');
+  const $endDate = $('input[name="endDate"]');
+
+  // Prevent selecting any Check-in date in the past
+  let today = new Date();
+  let tYear = today.getFullYear();
+  let tMonth = String(today.getMonth() + 1).padStart(2, '0');
+  let tDay = String(today.getDate()).padStart(2, '0');
+  $startDate.attr('min', `${tYear}-${tMonth}-${tDay}`);
+
+  // When the user selects or changes a Check-in date...
+  $startDate.on('change', function() {
+    if ($(this).val()) {
+      let start = new Date($(this).val());
+      
+      // Calculate exactly one day after the Check-in date
+      start.setDate(start.getDate() + 1);
+      
+      // Format to YYYY-MM-DD safely (avoiding timezone offset bugs)
+      let year = start.getFullYear();
+      let month = String(start.getMonth() + 1).padStart(2, '0');
+      let day = String(start.getDate()).padStart(2, '0');
+      let nextDay = `${year}-${month}-${day}`;
+      
+      // Lock the Check-out calendar to only allow 'nextDay' or later
+      $endDate.attr('min', nextDay);
+      
+      // Auto-clear the Check-out date if the user's previous selection is now invalid
+      if ($endDate.val() && $endDate.val() < nextDay) {
+        $endDate.val('');
+      }
+    }
+  });
+});
