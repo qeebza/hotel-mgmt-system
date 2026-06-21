@@ -1,12 +1,10 @@
 <?php
 
-require './vendor/autoload.php';
-require 'app/DB.php';
-require 'app/models/Admin.php';
-require 'app/dao/AdminDAO.php';
-require 'app/handlers/AdminHandler.php';
+require_once __DIR__ . '/../vendor/autoload.php';
 
-class AdminDAOTest extends PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class AdminDAOTest extends TestCase
 {
 
     public function testCreate()
