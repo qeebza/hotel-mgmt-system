@@ -43,7 +43,9 @@ const formData = {
       fullName: $('input[name="updateFullName"]').val(),
       phone: $("input[name='updatePhoneNumber']").val(),
       email: $("input[name='updateEmail']").val(),
+      currentPassword: $("input[name='updateCurrentPassword']").val(),
       newPassword: $("input[name='updatePassword']").val(),
+      confirmPassword: $("input[name='updatePassword2']").val(),
       submitBtn: $('input[name="updateProfileSubmitBtn"]').val()
     };
   }
@@ -150,7 +152,11 @@ const updateProfileSubmit = function () {
     }).done(function (response) {
       $(formIds.updateProfile).find('.alert').remove();
       $(formIds.updateProfile).prepend(response);
-      $(formIds.updateProfile).find('input').prop('disabled', true);
+      
+      // SOFTWARE QUALITY FIX: Only disable the form if the update was actually successful
+      if (response.includes("success")) {
+          $(formIds.updateProfile).find('input').prop('disabled', true);
+      }
     });
   } else {
     console.error('found reserved words');

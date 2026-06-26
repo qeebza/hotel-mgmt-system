@@ -24,6 +24,15 @@ class Reservation extends Booking
 
     public function setStart($start)
     {
+        // Convert the input string and today's date into comparable DateTime objects
+        $start_obj = new DateTime($start);
+        $today = new DateTime('today');
+        
+        // Business Logic Validation 1: Prevent booking in the past
+        if ($start_obj < $today) {
+            throw new LogicException("Chronological Error: Check-in date cannot be in the past.");
+        }
+        
         $this->start = $start;
     }
 
@@ -34,6 +43,19 @@ class Reservation extends Booking
 
     public function setEnd($end)
     {
+        // Ensure start is set first so we have something to compare against
+        if (empty($this->start)) {
+            throw new LogicException("System Error: Start date must be initialized before End date.");
+        }
+
+        $start_obj = new DateTime($this->start);
+        $end_obj = new DateTime($end);
+        
+        // Business Logic Validation 2: Prevent negative pricing (Time Travel bug)
+        if ($end_obj <= $start_obj) {
+            throw new LogicException("Chronological Error: Check-out date must be strictly after the Check-in date.");
+        }
+        
         $this->end = $end;
     }
 

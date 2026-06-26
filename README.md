@@ -16,10 +16,10 @@ Thank you for understanding!
 2. Clone or download the repo and put it to `xampp/htdocs/` if you're using windows, otherwise check tutorial(s) for your corresponding web server and OS. 
 3. Install dependencies for JavaScript, `npm install` and PHP, `composer install`.
 4. Create a database named `hotel` and run the script [`hotel.sql`](https://github.com/tramyardg/hotel-mgmt-system/blob/master/hotel.sql) to create tables and populate data. Make sure your configuration matches with [`app/DB.php`](https://github.com/tramyardg/hotel-mgmt-system/blob/master/app/DB.php#L14), otherwise make the desired changes.
-5. Run the app.
+5. Run the app and open the home page at http://localhost/hotel-mgmt-system/index.php.
 
 ## Create an account
-1. Go to the registration page (register.php) i.e. http://hotel.local/register.php | http://localhost/hotel-mgmt-system/
+1. Go to the registration page (register.php) i.e. http://localhost/hotel-mgmt-system/register.php
 2. Enter your info.
 3. To make an admin account
    - 3.1 go to your hotel database

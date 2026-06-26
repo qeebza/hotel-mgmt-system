@@ -45,7 +45,7 @@ public function getSingleRow($email)
         foreach ($k as $v) {
             $c->setId($v->getId());
             $c->setEmail($v->getEmail());
-            $c->setPassword($v->getPassword());
+            $c->setPasswordHash($v->getPassword());
             $c->setPhone($v->getPhone());
             $c->setFullName($v->getFullName());
         }
@@ -59,7 +59,7 @@ public function getSingleRow($email)
         foreach ($k as $v) {
             $c->setId($v->getId());
             $c->setEmail($v->getEmail());
-            $c->setPassword($v->getPassword());
+            $c->setPasswordHash($v->getPassword());
             $c->setPhone($v->getPhone());
             $c->setFullName($v->getFullName());
         }
@@ -111,6 +111,38 @@ public function getSingleRow($email)
                 $this->setExecutionFeedback("This email is not registered.");
             }
         }
+    }
+
+    public function updateCustomerProfile(Customer $customer)
+    {
+        $c_data = [$customer->getId(), $customer->getFullName(), $customer->getPhone(), $customer->getEmail()];
+        $c_data_string = implode(", ", $c_data);
+        if(Util::has_reserved_words($c_data_string)) {
+            $this->setExecutionFeedback("Something is not right.");
+        } else {
+            if ($this->isCustomerExists($customer->getEmail()) == 1) {
+                if ($this->updateProfile($customer)) {
+                    $this->setExecutionFeedback("You have successfully updated your profile!");
+                } else {
+                    $this->setExecutionFeedback(Util::DB_SERVER_ERROR);
+                }
+            } else {
+                $this->setExecutionFeedback("This email is not registered.");
+            }
+        }
+    }
+
+    public function isCurrentPasswordValid($password, $email)
+    {
+        $customer = new Customer();
+        $customer->setEmail($email);
+        $rows = $this->getSingleRow($email);
+
+        if (is_array($rows) && count($rows) > 0) {
+            return password_verify($password, $rows[0]->getPassword());
+        }
+
+        return false;
     }
 
     public function deleteCustomer(Customer $customer)
