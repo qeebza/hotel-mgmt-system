@@ -1,8 +1,14 @@
 <?php
 
+ini_set('session.use_strict_mode', '1');
+session_set_cookie_params([
+    'httponly' => true,
+    'secure' => !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off',
+    'samesite' => 'Lax'
+]);
 session_start();
 
-if ($_SERVER["REQUEST_METHOD"] == "GET") {
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Unset all of the session variables.
     $_SESSION = array();
 
@@ -25,4 +31,7 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
     session_destroy();
     $sessionsDeleted = 1;
     echo $sessionsDeleted;
+} else {
+    http_response_code(405);
+    echo "Invalid logout request.";
 }

@@ -78,23 +78,33 @@ const loginSubmit = function () {
     type: 'post',
     data: loginData
   }).done(function (response) {
-    let resp = JSON.parse(response);
-    if (resp[0] === 1) {
-      new UtilityFunctions().setCookie('is_admin', resp[1]);
-      let locHref = location.href;
-      let homePageLink = locHref.substring(0, locHref.lastIndexOf('/')) + '/index.php';
-      window.location.replace(homePageLink);
-    } else {
-      $(formIds.login).find('.alert').remove();
-      $(formIds.login).prepend(response);
+
+    $(formIds.login).find('.alert').remove();
+
+    try {
+        let resp = JSON.parse(response);
+
+        if (resp[0] === 1) {
+            new UtilityFunctions().setCookie('is_admin', resp[1]);
+
+            let locHref = location.href;
+            let homePageLink =
+                locHref.substring(0, locHref.lastIndexOf('/')) + '/index.php';
+
+            window.location.replace(homePageLink);
+        }
+    } catch (e) {
+        // Response is HTML alert message
+        $(formIds.login).prepend(response);
     }
-  });
+
+});
 };
 
 const clickSignOut = function () {
   $.ajax({
     url: 'app/process_logout.php',
-    type: 'get'
+    type: 'post'
   }).done(function (response) {
     if (response === '1') {
       new UtilityFunctions().eraseCookie('is_admin');
@@ -142,7 +152,11 @@ const updateProfileSubmit = function () {
     }).done(function (response) {
       $(formIds.updateProfile).find('.alert').remove();
       $(formIds.updateProfile).prepend(response);
-      $(formIds.updateProfile).find('input').prop('disabled', true);
+      
+      // SOFTWARE QUALITY FIX: Only disable the form if the update was actually successful
+      if (response.includes("success")) {
+          $(formIds.updateProfile).find('input').prop('disabled', true);
+      }
     });
   } else {
     console.error('found reserved words');

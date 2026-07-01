@@ -49,32 +49,43 @@ if (isset($_SESSION["authenticated"]) && $_SESSION["authenticated"][1] == "false
         if (!empty($errors_)) {
             echo $errors_;
         } else {
-            $r = new Reservation();
-            $r->setCid(Util::sanitize_xss($_POST["cid"]));
-            $r->setStatus(\models\StatusEnum::PENDING_STR);
-            $r->setNotes(null);
-            $r->setStart(Util::sanitize_xss($_POST["start"]));
-            $r->setEnd(Util::sanitize_xss($_POST["end"]));
-            $r->setType(Util::sanitize_xss($_POST["type"]));
-            $r->setRequirement(Util::sanitize_xss($_POST["requirement"]));
-            $r->setAdults(Util::sanitize_xss($_POST["adults"]));
-            $r->setChildren(Util::sanitize_xss($_POST["children"]));
-            $r->setRequests(Util::sanitize_xss($_POST["requests"]));
-            $unique = uniqid();
-            $r->setHash($unique);
+            // Software Quality Fix: Intercepting Logical Violations
+            try {
+                $r = new Reservation();
+                $r->setCid(Util::sanitize_xss($_POST["cid"]));
+                $r->setStatus(\models\StatusEnum::PENDING_STR);
+                $r->setNotes(null);
+                
+                // These will instantly throw a LogicException if the dates are impossible
+                $r->setStart(Util::sanitize_xss($_POST["start"]));
+                $r->setEnd(Util::sanitize_xss($_POST["end"]));
+                
+                $r->setType(Util::sanitize_xss($_POST["type"]));
+                $r->setRequirement(Util::sanitize_xss($_POST["requirement"]));
+                $r->setAdults(Util::sanitize_xss($_POST["adults"]));
+                $r->setChildren(Util::sanitize_xss($_POST["children"]));
+                $r->setRequests(Util::sanitize_xss($_POST["requests"]));
+                $unique = uniqid();
+                $r->setHash($unique);
 
-            $p = new Pricing();
-            $p->setBookedDate(Util::sanitize_xss($_POST['bookedDate']));
-            $p->setNights(Util::sanitize_xss($_POST['numNights']));
-            $p->setTotalPrice(Util::sanitize_xss($_POST['totalPrice']));
+                $p = new Pricing();
+                $p->setBookedDate(Util::sanitize_xss($_POST['bookedDate']));
+                $p->setNights(Util::sanitize_xss($_POST['numNights']));
+                $p->setTotalPrice(Util::sanitize_xss($_POST['totalPrice']));
 
-            $brh = new BookingReservationHandler($r, $p);
-            $temp = $brh->create();
-            $out = array(
-                "success" => "true",
-                "response" => Util::displayAlertV2($brh->getExecutionFeedback(), $temp)
-            );
-            echo json_encode($out, JSON_PRETTY_PRINT);
+                $brh = new BookingReservationHandler($r, $p);
+                $temp = $brh->create();
+                
+                $out = array(
+                    "success" => "true",
+                    "response" => Util::displayAlertV2($brh->getExecutionFeedback(), $temp)
+                );
+                echo json_encode($out, JSON_PRETTY_PRINT);
+                
+            } catch (LogicException $e) {
+                // Catches the Chronological Errors and displays them safely to the user
+                echo Util::displayAlertV1($e->getMessage(), "warning");
+            }
         }
     }
 } else {

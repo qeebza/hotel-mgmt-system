@@ -16,10 +16,10 @@ Thank you for understanding!
 2. Clone or download the repo and put it to `xampp/htdocs/` if you're using windows, otherwise check tutorial(s) for your corresponding web server and OS. 
 3. Install dependencies for JavaScript, `npm install` and PHP, `composer install`.
 4. Create a database named `hotel` and run the script [`hotel.sql`](https://github.com/tramyardg/hotel-mgmt-system/blob/master/hotel.sql) to create tables and populate data. Make sure your configuration matches with [`app/DB.php`](https://github.com/tramyardg/hotel-mgmt-system/blob/master/app/DB.php#L14), otherwise make the desired changes.
-5. Run the app.
+5. Run the app and open the home page at http://localhost/hotel-mgmt-system/index.php.
 
 ## Create an account
-1. Go to the registration page (register.php) i.e. http://hotel.local/register.php
+1. Go to the registration page (register.php) i.e. http://localhost/hotel-mgmt-system/register.php
 2. Enter your info.
 3. To make an admin account
    - 3.1 go to your hotel database
@@ -44,16 +44,40 @@ Thank you for understanding!
 ![manage_booking](https://user-images.githubusercontent.com/5623994/51089150-6d3e8f00-1736-11e9-9af0-601ef58847b4.PNG)
 
 ## For developer
+**Install PHP dependencies**
+```
+$ composer install
+```
+
+This project uses PHPUnit 9.6, which is compatible with PHP 7.4.
+
 **Run PHP unit tests**
+
+Run all tests:
 ```
 $ ./vendor/bin/phpunit tests
 ```
+
+Run the customer handler tests:
 ```
 $ ./vendor/bin/phpunit tests/CustomerHandlerTest.php
 ```
+
+Run the session and error management tests:
+```
+$ ./vendor/bin/phpunit tests/SessionErrorManagementTest.php
+```
+
+Run one specific test:
 ```
 $ ./vendor/bin/phpunit --filter testUpdateCustomer tests
 ```
+
+Example for session management:
+```
+$ ./vendor/bin/phpunit --filter testLogoutUsesPostRequest tests/SessionErrorManagementTest.php
+```
+
 **Run PHP code beautifier and fixer**
 ```
 $ ./vendor/bin/phpcbf app/process_login.php --standard=ruleset.xml

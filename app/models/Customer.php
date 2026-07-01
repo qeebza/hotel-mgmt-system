@@ -35,7 +35,6 @@ class Customer
         }
         $this->fullname = $fullName;
     }
-
     public function getEmail()
     {
         return $this->email;
