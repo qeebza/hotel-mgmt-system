@@ -29,6 +29,10 @@ class Customer
 
     public function setFullName($fullName)
     {
+        // Boundary Validation: Prevents database crash by catching overflow early
+        if (strlen($fullName) > 50) {
+            throw new InvalidArgumentException("Full name cannot exceed 50 characters.");
+        }
         $this->fullname = $fullName;
     }
 
@@ -47,10 +51,15 @@ class Customer
         return $this->password;
     }
 
+    // ✅ FIXED: standard password setter (used everywhere in system)
     public function setPassword($password)
     {
-        $hashed_password = password_hash($password, PASSWORD_BCRYPT);
-        $this->password = $hashed_password;
+        // Only hash if it's not already hashed (prevents double hashing issues)
+        if (strlen($password) < 60) {
+            $this->password = password_hash($password, PASSWORD_BCRYPT);
+        } else {
+            $this->password = $password;
+        }
     }
 
     public function getPhone()
@@ -60,6 +69,10 @@ class Customer
 
     public function setPhone($phone)
     {
+        // Data Type Validation: Enforces strict numeric structure via Regex
+        if (!preg_match('/^[0-9]{8,15}$/', $phone)) {
+            throw new InvalidArgumentException("Invalid phone format. Only numeric digits allowed.");
+        }
         $this->phone = $phone;
     }
 }
