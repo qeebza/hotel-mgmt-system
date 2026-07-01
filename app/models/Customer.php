@@ -50,10 +50,15 @@ class Customer
         return $this->password;
     }
 
+    // ✅ FIXED: standard password setter (used everywhere in system)
     public function setPassword($password)
     {
-        $hashed_password = password_hash($password, PASSWORD_BCRYPT);
-        $this->password = $hashed_password;
+        // Only hash if it's not already hashed (prevents double hashing issues)
+        if (strlen($password) < 60) {
+            $this->password = password_hash($password, PASSWORD_BCRYPT);
+        } else {
+            $this->password = $password;
+        }
     }
 
     public function getPhone()

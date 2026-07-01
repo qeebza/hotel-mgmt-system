@@ -45,7 +45,7 @@ public function getSingleRow($email)
         foreach ($k as $v) {
             $c->setId($v->getId());
             $c->setEmail($v->getEmail());
-            $c->setPasswordHash($v->getPassword());
+            $c->setPassword($v->getPassword());
             $c->setPhone($v->getPhone());
             $c->setFullName($v->getFullName());
         }
@@ -59,7 +59,7 @@ public function getSingleRow($email)
         foreach ($k as $v) {
             $c->setId($v->getId());
             $c->setEmail($v->getEmail());
-            $c->setPasswordHash($v->getPassword());
+            $c->setPassword($v->getPassword());
             $c->setPhone($v->getPhone());
             $c->setFullName($v->getFullName());
         }
